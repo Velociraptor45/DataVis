@@ -83,8 +83,8 @@ var d3 = d3 || {};
         var rankingObject = {"children": treemapDataHome}
 
         var svg = d3.select("svg"),
-            width = +svg.attr("width"),
-            height = +svg.attr("height");
+            width = 500.0,
+            height = 600.0;
 
         var treemap = d3.treemap()
             .tile(d3.treemapResquarify)
@@ -106,9 +106,32 @@ var d3 = d3 || {};
 
     function addItemsToDOM(svg, data)
     {
-        var rectangle = svg.selectAll("g")
+        var gElements = svg.selectAll("g")
             .data(data)
-            .enter().append("g");
+            .enter().append("g")
+            .attr("transform", function(d, i){
+                return "translate(" + d.x0 + "," + d.y0 + ")";
+            });
+
+        var rectangles = svg.selectAll("g")
+            .append("rect")
+            .attr("height", function(d){
+                return d.y1 - d.y0;
+            })
+            .attr("width", function(d){
+                return d.x1 - d.x0;
+            })
+            .attr("class", "HomeStat");
+
+        var labels = svg.selectAll("g")
+            .append("text")
+            .text(function(d){
+                return d.data["team"];
+            })
+            .attr("dy", "2em")
+            .attr("dx", "1em")
+            .attr("width", function(d){
+            return d.x1 - d.x0});
     }
 
 

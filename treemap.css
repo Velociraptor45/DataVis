@@ -1,4 +1,8 @@
 #treemapHomeTeam{
-    width: 400px;
-    height: 500px;
+    width: 500px;
+    height: 600px;
+}
+
+rect {
+    fill: rgb(104, 241, 92);
 }

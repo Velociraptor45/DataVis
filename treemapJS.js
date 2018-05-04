@@ -5,15 +5,18 @@ var d3 = d3 || {};
 
     var treemapDataHome = [];
     var treemapDataAway = [];
+    var amountTeamsInCompareArea = 0;
 
     function loadJSON(){
         d3.json("JSON/bundesliga06_17.json", function(data){
             buildTreemapJSON(data.bundesliga[10].saison_16_17);
-            buildTreemap();
+            buildTreemap(treemapDataHome, "#treemapHomeTeam");
+            buildTreemap(treemapDataAway, "#treemapAwayTeam");
         });
     }
 
     /*
+        builds treemapDataHoem and treemapDataAway arrays by extracting from the data json
         data contains one season
     */
     function buildTreemapJSON(data){
@@ -52,12 +55,18 @@ var d3 = d3 || {};
         //console.log(treemapDataHome);
     }
 
+    /*
+        adds a new team to the array
+    */
     function addKeyToJSON(team, array)
     {
         var obj = {"team": team, "value": 0}
         array.push(obj);
     }
 
+    /*
+        returns the index of the team in the data array
+    */
     function getIndexOfTeam(team, data)
     {
         for(var i = 0; i < data.length; i++){
@@ -68,6 +77,9 @@ var d3 = d3 || {};
         return -1;
     }
 
+    /*
+        returns if the team is in the data array
+    */
     function isInData(team, data){
         for(var i = 0; i < data.length; i++){
             if(data[i].team == team){
@@ -77,12 +89,18 @@ var d3 = d3 || {};
         return false;
     }
 
-    function buildTreemap()
+    /*
+        starts preparing to build a treemap
+        creates a hierarchy object and nests it into a treemap object
+        treemapData is either the home or away array
+        svgID is the ID of the svg element in the DOM
+    */
+    function buildTreemap(treemapData, svgID)
     {
-        console.log(treemapDataHome);
-        var rankingObject = {"children": treemapDataHome}
+        console.log(treemapData);
+        var rankingObject = {"children": treemapData}
 
-        var svg = d3.select("svg"),
+        var svg = d3.select(svgID),
             width = 500.0,
             height = 600.0;
 
@@ -104,6 +122,11 @@ var d3 = d3 || {};
         addItemsToDOM(svg, root.children);
     }
 
+    /*
+        adds a treemap to the DOM
+        svg is the svg element from the DOM where the treemap is build into
+        data is the children array from the treemap object
+    */
     function addItemsToDOM(svg, data)
     {
         var gElements = svg.selectAll("g")
@@ -132,6 +155,20 @@ var d3 = d3 || {};
             .attr("dx", "1em")
             .attr("width", function(d){
             return d.x1 - d.x0});
+    }
+
+    function dragIntoCompareArea($rect){
+        switch(amountTeamsInCompareArea)
+        {
+            case 0: 
+            break;
+
+            case 1:
+            break;
+
+            default:
+            break;
+        }
     }
 
 

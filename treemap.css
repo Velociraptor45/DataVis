@@ -1,6 +1,38 @@
 #treemapHomeTeam{
     width: 500px;
     height: 600px;
+    position: absolute;
+    left: 0;
+    top: 10px;
+}
+
+#treemapAwayTeam{
+    width: 500px;
+    height: 600px;
+    position: absolute;
+    top: 10px;
+    left: 900px;
+}
+
+#compareArea{
+    width: 300px;
+    height: 600px;
+    position: absolute;
+    left: 550px;
+    top: 10px;
+}
+
+#compareTeamOne{
+    /*position: relative;
+    /*top: 0;
+    left: 0;*/
+    width: 20px;
+    height: 20px;
+}
+
+#compareTeamTwo{
+    position: relative;
+
 }
 
 rect {

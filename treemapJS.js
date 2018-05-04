@@ -6,12 +6,14 @@ var d3 = d3 || {};
     var treemapDataHome = [];
     var treemapDataAway = [];
     var amountTeamsInCompareArea = 0;
+    var saveCompareAreaObjectsInformation = [];
 
     function loadJSON(){
         d3.json("JSON/bundesliga06_17.json", function(data){
             buildTreemapJSON(data.bundesliga[10].saison_16_17);
             buildTreemap(treemapDataHome, "#treemapHomeTeam");
             buildTreemap(treemapDataAway, "#treemapAwayTeam");
+            setGElementsAsButtons();
         });
     }
 
@@ -143,8 +145,7 @@ var d3 = d3 || {};
             })
             .attr("width", function(d){
                 return d.x1 - d.x0;
-            })
-            .attr("class", "HomeStat");
+            });
 
         var labels = svg.selectAll("g")
             .append("text")
@@ -157,13 +158,50 @@ var d3 = d3 || {};
             return d.x1 - d.x0});
     }
 
-    function dragIntoCompareArea($rect){
+    function setGElementsAsButtons()
+    {
+        var x = $("g");
+        console.log(x);
+        for(var i = 0; i < x.length; i++)
+        {
+            x.eq(i).on('click', function(){
+                dragIntoCompareArea($(this));
+            });
+        }
+    }
+
+    /*
+        extracts information of the passed object and saves them
+    */
+    function saveInformation($g){
+        var transform = $g.attr("transform");
+        var $rect = $g.find("rect");
+        var height = $rect.attr("height");
+        var width = $rect.attr("width");
+
+        saveCompareAreaObjectsInformation.push({"transform": transform, "heigth": height, "width": width})
+    }
+
+    function dragIntoCompareArea($g){
+        saveInformation($g);
+
+        var transform = $g.attr("transform");
+        var $rect = $g.find("rect");
+        var height = $rect.attr("height");
+        var width = $rect.attr("width");
+
         switch(amountTeamsInCompareArea)
         {
-            case 0: 
+            case 0:
+                var gAim = d3.select("#compareTeamOne");
+                gAim.attr("transform", "translate(0,0)");
+                gAim.select("rect").attr("height", height).attr("width", width);
+                amountTeamsInCompareArea++;
             break;
 
             case 1:
+                var gAim = d3.select("#compareTeamOne");
+                amountTeamsInCompareArea++;
             break;
 
             default:

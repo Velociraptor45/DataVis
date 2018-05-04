@@ -22,18 +22,13 @@
     top: 10px;
 }
 
-#compareTeamOne{
-    /*position: relative;
-    /*top: 0;
-    left: 0;*/
-    width: 20px;
-    height: 20px;
+/*#compareTeamOne{
+    
 }
 
-#compareTeamTwo{
-    position: relative;
-
-}
+/*#compareTeamTwo{
+    
+}*/
 
 rect {
     fill: rgb(104, 241, 92);

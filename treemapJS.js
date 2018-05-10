@@ -5,14 +5,22 @@ var d3 = d3 || {};
 
     var treemapDataHome = [];
     var treemapDataAway = [];
-    var amountTeamsInCompareArea = 0;
+    var $compareAreaOneTeam = undefined;
+    var $compareAreaTwoTeam = undefined;
     var saveCompareAreaObjectsInformation = [];
+
+    var treemapHomeID = "#treemapHomeTeam";
+    var treemapAwayID = "#treemapAwayTeam";
+
+    var compareAreaElementHeight = 50;
+    var singleUnitWidth = 10;
+    var compareAreaWidth
 
     function loadJSON(){
         d3.json("JSON/bundesliga06_17.json", function(data){
             buildTreemapJSON(data.bundesliga[10].saison_16_17);
-            buildTreemap(treemapDataHome, "#treemapHomeTeam");
-            buildTreemap(treemapDataAway, "#treemapAwayTeam");
+            buildTreemap(treemapDataHome, treemapHomeID);
+            buildTreemap(treemapDataAway, treemapAwayID);
             setGElementsAsButtons();
         });
     }
@@ -99,7 +107,7 @@ var d3 = d3 || {};
     */
     function buildTreemap(treemapData, svgID)
     {
-        console.log(treemapData);
+        //console.log(treemapData);
         var rankingObject = {"children": treemapData}
 
         var svg = d3.select(svgID),
@@ -152,19 +160,43 @@ var d3 = d3 || {};
             .text(function(d){
                 return d.data["team"];
             })
-            .attr("dy", "2em")
+            .attr("dy", "1em")
             .attr("dx", "1em")
             .attr("width", function(d){
-            return d.x1 - d.x0});
+                return d.x1 - d.x0;
+            });
+
+        var numbers = svg.selectAll("g")
+            .append("text")
+            .text(function(d){
+                return d.data["value"];
+            })
+            .attr("dy", "2.5em")
+            .attr("dx", "2em")
+            .attr("width", function(d){
+                return d.x1 - d.x0;
+            });
     }
 
+    /*
+        selects all g-elements in both treemaps and calls the method to set
+        the button functionality
+    */
     function setGElementsAsButtons()
     {
-        var x = $("g");
-        console.log(x);
-        for(var i = 0; i < x.length; i++)
+        var homeG = $(treemapHomeID).find("g");
+        var awayG = $(treemapAwayID).find("g");
+        setButtonFunctionality(homeG);
+        setButtonFunctionality(awayG);
+    }
+
+    /*
+        sets the button functionality for every element in the passed list
+    */
+    function setButtonFunctionality(list){
+        for(var i = 0; i < list.length; i++)
         {
-            x.eq(i).on('click', function(){
+            list.eq(i).on('click', function(){
                 dragIntoCompareArea($(this));
             });
         }
@@ -182,31 +214,86 @@ var d3 = d3 || {};
         saveCompareAreaObjectsInformation.push({"transform": transform, "heigth": height, "width": width})
     }
 
+    /*
+        this function is called when a element in one of the treemaps is clicked
+        $g is the clicked element
+        the function adds the clicked element to the compare area (if it's not full or the element already in it)
+    */
     function dragIntoCompareArea($g){
         saveInformation($g);
-
+        var value = $g[0]["__data__"].value;
         var transform = $g.attr("transform");
         var $rect = $g.find("rect");
         var height = $rect.attr("height");
         var width = $rect.attr("width");
+        var newRectBounds = recalculateArea(width, height);
 
-        switch(amountTeamsInCompareArea)
-        {
-            case 0:
+        if($compareAreaOneTeam == undefined || $compareAreaOneTeam[0] != $g[0]){
+            if($compareAreaOneTeam == undefined && ($compareAreaTwoTeam == undefined || $compareAreaTwoTeam[0] != $g[0])){
                 var gAim = d3.select("#compareTeamOne");
                 gAim.attr("transform", "translate(0,0)");
-                gAim.select("rect").attr("height", height).attr("width", width);
-                amountTeamsInCompareArea++;
-            break;
-
-            case 1:
-                var gAim = d3.select("#compareTeamOne");
-                amountTeamsInCompareArea++;
-            break;
-
-            default:
-            break;
+                gAim.select("rect").attr("height", newRectBounds[1]).attr("width", value * singleUnitWidth);
+                $compareAreaOneTeam = $g;
+                addSelectedClass($g.find("rect"));
+            } else if ($compareAreaTwoTeam == undefined || $compareAreaTwoTeam[0] != $g[0]) {
+                if ($compareAreaTwoTeam == undefined && $compareAreaOneTeam[0] != $g[0]){
+                    var gAim = d3.select("#compareTeamTwo");
+                    gAim.attr("transform", "translate(0," + (compareAreaElementHeight + 10) + ")");
+                    gAim.select("rect").attr("height", newRectBounds[1]).attr("width", value * singleUnitWidth);
+                    $compareAreaTwoTeam = $g;
+                    addSelectedClass($g.find("rect"));
+                }
+            } else {
+                removeSelectedClass($g.find("rect"));
+                removeFromCompareArea(1);
+            }
+        } else {
+            removeSelectedClass($g.find("rect"));
+            removeFromCompareArea(0);
         }
+    }
+
+    /*
+        removes a rect from the compare area and clears the variable in which the team was saved
+        number is 0 or 1 and indicates whether the first or the second rect should be removed
+    */
+    function removeFromCompareArea(number){
+        var gAim;
+        switch(number)
+        {
+            case 0:
+                gAim = d3.select("#compareTeamOne");
+                $compareAreaOneTeam = undefined;
+                break;
+            case 1:
+                gAim = d3.select("#compareTeamTwo");
+                $compareAreaTwoTeam = undefined;
+                break;
+            default:
+                console.log("number error");
+        }
+        gAim.select("rect").attr("height", 0).attr("width", 0);
+    }
+
+    /*
+        recalculates the initial area size to fit the rect it into the compare area
+    */
+    function recalculateArea(x, y){
+        var xNew, yNew;
+        var oldAreaSize = x * y;
+        yNew = compareAreaElementHeight;
+        xNew = oldAreaSize / yNew;
+
+        return [xNew, yNew];
+    }
+
+    function addSelectedClass($element){
+        $element.addClass("selected");
+    }
+
+    function removeSelectedClass($element){
+        $element.removeClass("selected");
+        console.log($element);
     }
 
 

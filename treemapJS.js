@@ -14,7 +14,6 @@ var d3 = d3 || {};
 
     var compareAreaElementHeight = 50;
     var singleUnitWidth = 10;
-    var compareAreaWidth
 
     function loadJSON(){
         d3.json("JSON/bundesliga06_17.json", function(data){
@@ -217,67 +216,77 @@ var d3 = d3 || {};
     /*
         this function is called when a element in one of the treemaps is clicked
         $g is the clicked element
-        the function adds the clicked element to the compare area (if it's not full or the element already in it)
+        the function calls the method to add the clicked element to the compare area (if it's not full or the element already in it)
     */
     function dragIntoCompareArea($g){
         saveInformation($g);
-        var value = $g[0]["__data__"].value;
-        var transform = $g.attr("transform");
-        var $rect = $g.find("rect");
-        var height = $rect.attr("height");
-        var width = $rect.attr("width");
-        var newRectBounds = recalculateArea(width, height);
 
         if($compareAreaOneTeam == undefined || $compareAreaOneTeam[0] != $g[0]){
             if($compareAreaOneTeam == undefined && ($compareAreaTwoTeam == undefined || $compareAreaTwoTeam[0] != $g[0])){
-                var gAim = d3.select("#compareTeamOne");
-                gAim.attr("transform", "translate(0,0)");
-                gAim.select("rect").attr("height", newRectBounds[1]).attr("width", value * singleUnitWidth);
-                $compareAreaOneTeam = $g;
-                addSelectedClass($g.find("rect"));
+                setSingleCompareTeam($g, true, "#compareTeamOne", "#teamOneValue", "#teamOneName", 30, "-0.3em");
             } else if ($compareAreaTwoTeam == undefined || $compareAreaTwoTeam[0] != $g[0]) {
                 if ($compareAreaTwoTeam == undefined && $compareAreaOneTeam[0] != $g[0]){
-                    var gAim = d3.select("#compareTeamTwo");
-                    gAim.attr("transform", "translate(0," + (compareAreaElementHeight + 10) + ")");
-                    gAim.select("rect").attr("height", newRectBounds[1]).attr("width", value * singleUnitWidth);
-                    $compareAreaTwoTeam = $g;
-                    addSelectedClass($g.find("rect"));
+                    setSingleCompareTeam($g, false, "#compareTeamTwo", "#teamTwoValue", "#teamTwoName", 90, "3.3em");
                 }
             } else {
                 removeSelectedClass($g.find("rect"));
-                removeFromCompareArea(1);
+                removeFromCompareArea(false, "#compareTeamTwo", "#teamTwoValue", "#teamTwoName");
             }
         } else {
             removeSelectedClass($g.find("rect"));
-            removeFromCompareArea(0);
+            removeFromCompareArea(true, "#compareTeamOne", "#teamOneValue", "#teamOneName");
         }
+    }
+
+    /*
+        adds the clicked element to the compare Area
+        $g is the clicked element
+        isFirstTeam indicates whether it should be the first or the second team in the compareArea
+        gID is the ID of the g-element in the compare area
+        textNameID is the ID of the text element (in the compare area) in which the name of the specified team should be placed
+        textValueID is the ID of the text element (in the compare area) in which the amount of won games of the specified team should be placed
+        yPositionG is the y-position of the the specified g-element
+        yPositionName is the y-position of the team's name
+    */
+    function setSingleCompareTeam($g, isFirstTeam, gID, textNameID, textValueID, yPositionG, yPositionName){
+        var $gData = $g[0]["__data__"];
+        var value = $gData.value;
+        var teamName = $gData["data"].team;
+        
+        var gAim = d3.select(gID);
+        gAim.attr("transform", "translate(0,"+ yPositionG + ")");
+        gAim.select("rect").attr("height", compareAreaElementHeight).attr("width", value * singleUnitWidth);
+        gAim.select(textNameID).text(teamName).attr("width", $gData.x1 - $gData.x0).attr("dy", yPositionName);
+        gAim.select(textValueID).text(value).attr("dy", "1.6em").attr("dx", (value * singleUnitWidth + 3) + "px");
+        if(isFirstTeam){
+            $compareAreaOneTeam = $g;
+        } else {
+            $compareAreaTwoTeam = $g;
+        }
+        addSelectedClass($g.find("rect"));
     }
 
     /*
         removes a rect from the compare area and clears the variable in which the team was saved
         number is 0 or 1 and indicates whether the first or the second rect should be removed
     */
-    function removeFromCompareArea(number){
+    function removeFromCompareArea(isFirstTeam, gID, textNameID, textValueID){
         var gAim;
-        switch(number)
-        {
-            case 0:
-                gAim = d3.select("#compareTeamOne");
-                $compareAreaOneTeam = undefined;
-                break;
-            case 1:
-                gAim = d3.select("#compareTeamTwo");
-                $compareAreaTwoTeam = undefined;
-                break;
-            default:
-                console.log("number error");
-        }
+        gAim = d3.select(gID);
         gAim.select("rect").attr("height", 0).attr("width", 0);
+        gAim.select(textNameID).text("");
+        gAim.select(textValueID).text("");
+
+        if(isFirstTeam){
+            $compareAreaOneTeam = undefined;
+        } else {
+            $compareAreaTwoTeam = undefined;
+        }
     }
 
     /*
         recalculates the initial area size to fit the rect it into the compare area
-    */
+    
     function recalculateArea(x, y){
         var xNew, yNew;
         var oldAreaSize = x * y;
@@ -285,7 +294,7 @@ var d3 = d3 || {};
         xNew = oldAreaSize / yNew;
 
         return [xNew, yNew];
-    }
+    }*/
 
     function addSelectedClass($element){
         $element.addClass("selected");
@@ -293,7 +302,6 @@ var d3 = d3 || {};
 
     function removeSelectedClass($element){
         $element.removeClass("selected");
-        console.log($element);
     }
 
 

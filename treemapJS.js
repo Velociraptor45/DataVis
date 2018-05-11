@@ -11,9 +11,20 @@ var d3 = d3 || {};
 
     var treemapHomeID = "#treemapHomeTeam";
     var treemapAwayID = "#treemapAwayTeam";
+    var compareAreaTeamOneID = "#compareTeamOne";
+    var compareAreaTeamOneNameID = "#teamOneName";
+    var compareAreaTeamOneValueID = "#teamOneValue";
+    var compareAreaTeamTwoID = "#compareTeamTwo";
+    var compareAreaTeamTwoNameID = "#teamTwoName";
+    var compareAreaTeamTwoValueID = "#teamTwoValue";
 
     var compareAreaElementHeight = 50;
     var singleUnitWidth = 10;
+
+    var yPositionFirstTeamNameInCompareArea = "-6px";
+    var yPositionSecondTeamNameInCompareArea = "65px";
+    var yPositionFirstTeamRectInCompareArea = 30;
+    var yPositionSecondTeamRectInCompareArea = compareAreaElementHeight + 40;
 
     function loadJSON(){
         d3.json("JSON/bundesliga06_17.json", function(data){
@@ -223,18 +234,18 @@ var d3 = d3 || {};
 
         if($compareAreaOneTeam == undefined || $compareAreaOneTeam[0] != $g[0]){
             if($compareAreaOneTeam == undefined && ($compareAreaTwoTeam == undefined || $compareAreaTwoTeam[0] != $g[0])){
-                setSingleCompareTeam($g, true, "#compareTeamOne", "#teamOneValue", "#teamOneName", 30, "-0.3em");
+                setSingleCompareTeam($g, true, compareAreaTeamOneID, compareAreaTeamOneNameID, compareAreaTeamOneValueID, yPositionFirstTeamRectInCompareArea, yPositionFirstTeamNameInCompareArea);
             } else if ($compareAreaTwoTeam == undefined || $compareAreaTwoTeam[0] != $g[0]) {
                 if ($compareAreaTwoTeam == undefined && $compareAreaOneTeam[0] != $g[0]){
-                    setSingleCompareTeam($g, false, "#compareTeamTwo", "#teamTwoValue", "#teamTwoName", 90, "3.3em");
+                    setSingleCompareTeam($g, false, compareAreaTeamTwoID, compareAreaTeamTwoNameID, compareAreaTeamTwoValueID, yPositionSecondTeamRectInCompareArea, yPositionSecondTeamNameInCompareArea);
                 }
             } else {
                 removeSelectedClass($g.find("rect"));
-                removeFromCompareArea(false, "#compareTeamTwo", "#teamTwoValue", "#teamTwoName");
+                removeFromCompareArea(false, compareAreaTeamTwoID, compareAreaTeamTwoNameID, compareAreaTeamTwoValueID);
             }
         } else {
             removeSelectedClass($g.find("rect"));
-            removeFromCompareArea(true, "#compareTeamOne", "#teamOneValue", "#teamOneName");
+            removeFromCompareArea(true, compareAreaTeamOneID, compareAreaTeamOneNameID, compareAreaTeamOneValueID);
         }
     }
 

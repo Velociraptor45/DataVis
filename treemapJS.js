@@ -109,6 +109,10 @@ var d3 = d3 || {};
         return false;
     }
 
+    function setSVGSize(svg, width, height){
+        svg.attr("width", width).attr("height", height);
+    }
+
     /*
         starts preparing to build a treemap
         creates a hierarchy object and nests it into a treemap object
@@ -120,9 +124,11 @@ var d3 = d3 || {};
         //console.log(treemapData);
         var rankingObject = {"children": treemapData}
 
-        var svg = d3.select(svgID),
-            width = 500.0,
-            height = 600.0;
+        var svg = d3.select(svgID);
+        var width = ($(window).width() / 2) * 0.75;
+        var height = 600.0;
+
+        setSVGSize(svg, width, height);
 
         var treemap = d3.treemap()
             .tile(d3.treemapResquarify)

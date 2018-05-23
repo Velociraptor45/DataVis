@@ -1,7 +1,7 @@
 #treemapHomeTeam{
-    width: 500px;
-    height: 600px;
-    position: absolute;
+    /*width: 500px;
+    height: 600px;*/
+    position: relative;
     left: 0;
     top: 10px;
 }
@@ -29,14 +29,6 @@
 #compareArea text{
     font-size: 20px;
 }
-
-/*#compareTeamOne{
-    
-}
-
-/*#compareTeamTwo{
-    
-}*/
 
 rect {
     fill: rgb(104, 241, 92);

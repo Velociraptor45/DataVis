@@ -1,0 +1,111 @@
+body {
+  background-color: #fdfff8;
+  font-family: 'Lato', sans-serif;
+}
+
+header {
+  display: grid;
+  grid-template-columns: 1fr 9fr;
+  grid-gap: 10px;
+}
+#logo {
+  width: 100px;
+  height: auto;
+  cursor: pointer;
+}
+header div {
+  text-align: right;
+  padding-right: 20px;
+}
+header div h1 {
+  font-size: 4em;
+  margin: 0;
+}
+nav {
+  margin-top: 15px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-gap: 5px;
+}
+nav a div {
+  text-align: center;
+  padding: 10px;
+}
+nav a:hover {
+  background-color: #2b5c03;
+  color: white;
+  opacity: .8;
+}
+a {
+  text-decoration: none;
+  color: black;
+}
+
+main {
+  background: url('../img/bg.png') no-repeat center center fixed;
+  background-size: cover;
+  padding: 20px;
+  margin-top: 10px;
+}
+
+.chart {
+  height: 620px;
+  margin: 20px auto;
+  background-color: white;
+  opacity: .8;
+  padding: 10px;
+}
+main h2 {
+  padding: 5px;
+  font-family: 'Lato', sans-serif;
+  font-weight: 900;
+  background-color: white;
+  opacity: .8;
+  text-align: center;
+}
+footer {
+  background-color: #2b5c03;
+  color: white;
+  text-align: center;
+  margin-top: 10px;
+  padding: 15px;
+}
+
+
+/* specific */
+
+#treemapHomeTeam{
+  position: relative;
+  left: 10px;
+  top: 10px;
+}
+
+#treemapAwayTeam{
+  position: relative;
+  right: 0px;;
+  top: 10px;
+}
+
+#compareArea{
+  width: 300px;
+  height: 600px;
+  position: relative;
+  left: 50px;
+  top: 10px;
+}
+
+.selected{
+  fill: rgb(255, 0, 0);
+}
+
+#compareArea text{
+  font-size: 20px;
+}
+
+svg{
+  filter: drop-shadow(30px, 10px, 4px, rgb(0,0,0));
+}
+
+rect {
+  fill: rgb(104, 241, 92);
+}

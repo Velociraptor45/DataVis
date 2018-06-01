@@ -25,23 +25,27 @@
     <main>
       <h2>Apex New - Bundesliga in bunt! </h2>
       <div class="chart">
-        <svg id="treemapHomeTeam"></svg>
+        <div class="svgContainer">
+          <svg id="treemapHomeTeam">
+            <text>Heimstärke</text>
+          </svg>
 
-        <svg id="compareArea"> 
-            <g id="compareTeamOne">
-                <text id="teamOneName"></text>
-                <text id="teamOneValue"></text>
-                <rect></rect>
-            </g>
-            <g id="compareTeamTwo">
-                <rect></rect>
-                <text id="teamTwoValue"></text>
-                <text id="teamTwoName"></text>
-            </g>
-        </svg>
-        
+          <svg id="compareArea"> 
+              <g id="compareTeamOne">
+                  <text id="teamOneName"></text>
+                  <text id="teamOneValue"></text>
+                  <rect></rect>
+              </g>
+              <g id="compareTeamTwo">
+                  <rect></rect>
+                  <text id="teamTwoValue"></text>
+                  <text id="teamTwoName"></text>
+              </g>
+          </svg>
+          
 
-        <svg id="treemapAwayTeam"></svg>
+          <svg id="treemapAwayTeam"></svg>
+        </div>
       </div>
     </main>
     <footer>

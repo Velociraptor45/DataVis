@@ -125,7 +125,7 @@ var d3 = d3 || {};
         var rankingObject = {"children": treemapData}
 
         var svg = d3.select(svgID);
-        var width = ($(window).width() / 2) * 0.75;
+        var width = ($(window).width() / 2) * 0.7
         var height = 600.0;
 
         setSVGSize(svg, width, height);

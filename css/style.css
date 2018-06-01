@@ -54,7 +54,9 @@ main {
   background-color: white;
   opacity: .8;
   padding: 10px;
+  text-align: center;
 }
+
 main h2 {
   padding: 5px;
   font-family: 'Lato', sans-serif;
@@ -82,7 +84,6 @@ footer {
 
 #treemapAwayTeam{
   position: relative;
-  right: 0px;;
   top: 10px;
 }
 
@@ -92,6 +93,10 @@ footer {
   position: relative;
   left: 50px;
   top: 10px;
+}
+
+.svgContainer{
+  display: inline-block;
 }
 
 .selected{

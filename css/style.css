@@ -1,6 +1,7 @@
 body {
   background-color: #fdfff8;
   font-family: 'Lato', sans-serif;
+  hyphens: auto;
 }
 
 header {
@@ -49,11 +50,10 @@ main {
 }
 
 .chart {
-  height: 620px;
   margin: 20px auto;
   background-color: white;
   opacity: .8;
-  padding: 10px;
+  padding: 20px;
   text-align: center;
 }
 
@@ -63,8 +63,9 @@ main h2 {
   font-weight: 900;
   background-color: white;
   opacity: .8;
-  text-align: center;
+  height: 30px;
 }
+
 footer {
   background-color: #2b5c03;
   color: white;
@@ -76,23 +77,35 @@ footer {
 
 /* specific */
 
+.strengthHome{
+  position: absolute;
+  left: 10%;
+}
+
+.strengthAway{
+  position: absolute;
+  right: 10%;
+}
+
 #treemapHomeTeam{
   position: relative;
   left: 10px;
-  top: 10px;
 }
 
 #treemapAwayTeam{
   position: relative;
-  top: 10px;
 }
 
 #compareArea{
-  width: 300px;
-  height: 600px;
+  width: 200px;
+  height: 400px;
   position: relative;
-  left: 50px;
   top: 10px;
+}
+
+#compareTeamOne {
+  position: relative;
+  left: 30px;
 }
 
 .svgContainer{
@@ -101,6 +114,7 @@ footer {
 
 .selected{
   fill: rgb(255, 0, 0);
+  opacity: 0.7;
 }
 
 #compareArea text{
@@ -111,6 +125,24 @@ svg{
   filter: drop-shadow(30px, 10px, 4px, rgb(0,0,0));
 }
 
+image {
+  opacity: 1;
+}
+
 rect {
+  fill: url("../img/bg2.jpg");
+  stroke: white;
+  stroke-width: 1.5px;
+  stroke-opacity: 1;
+}
+
+#compareArea rect{
   fill: rgb(104, 241, 92);
+}
+
+.value{
+  fill: black;
+  stroke: white;
+  stroke-width: 1px;
+  text-anchor: middle;
 }

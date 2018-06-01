@@ -22,9 +22,13 @@ var d3 = d3 || {};
     var singleUnitWidth = 10;
 
     var yPositionFirstTeamNameInCompareArea = "-6px";
-    var yPositionSecondTeamNameInCompareArea = "65px";
+    var yPositionSecondTeamNameInCompareArea = "67px";
     var yPositionFirstTeamRectInCompareArea = 30;
     var yPositionSecondTeamRectInCompareArea = compareAreaElementHeight + 40;
+
+    var xPositionSingleCompareTeam = 35;
+
+    var widthCompareArea = 200;
 
     function loadJSON(){
         d3.json("JSON/bundesliga06_17.json", function(data){
@@ -125,7 +129,7 @@ var d3 = d3 || {};
         var rankingObject = {"children": treemapData}
 
         var svg = d3.select(svgID);
-        var width = ($(window).width() / 2) * 0.7
+        var width = (($(window).width() - widthCompareArea) / 2) * 0.9;
         var height = 600.0;
 
         setSVGSize(svg, width, height);
@@ -162,6 +166,18 @@ var d3 = d3 || {};
                 return "translate(" + d.x0 + "," + d.y0 + ")";
             });
 
+        var images = svg.selectAll("g")
+            .append("image")
+            .attr("xlink:href", function(d){
+                return "img/bayern3.png";
+            })
+            .attr("height", function(d){
+                return (d.x1 - d.x0 < d.y1 - d.y0) ? (d.y1 - d.y0) : (d.x1 - d.x0);
+            })
+            .attr("width", function(d){
+                return (d.x1 - d.x0 > d.y1 - d.y0) ? (d.x1 - d.x0) : (d.y1 - d.y0);
+            });
+
         var rectangles = svg.selectAll("g")
             .append("rect")
             .attr("height", function(d){
@@ -171,7 +187,7 @@ var d3 = d3 || {};
                 return d.x1 - d.x0;
             });
 
-        var labels = svg.selectAll("g")
+        /*var labels = svg.selectAll("g")
             .append("text")
             .text(function(d){
                 return d.data["team"];
@@ -180,18 +196,24 @@ var d3 = d3 || {};
             .attr("dx", "1em")
             .attr("width", function(d){
                 return d.x1 - d.x0;
-            });
+            });*/
 
         var numbers = svg.selectAll("g")
             .append("text")
             .text(function(d){
                 return d.data["value"];
             })
-            .attr("dy", "2.5em")
-            .attr("dx", "2em")
-            .attr("width", function(d){
-                return d.x1 - d.x0;
-            });
+            .attr("dy", "1em")
+            .attr("dx", function(d){
+                return ((d.x1 - d.x0) / 2) + "px";
+            })
+            .attr("font-weight", "bold")
+            .attr("font-size", function(d){
+                return (25 + d.data["value"]) + "px";
+            })
+            .attr("class", "value");
+
+        
     }
 
     /*
@@ -271,7 +293,7 @@ var d3 = d3 || {};
         var teamName = $gData["data"].team;
         
         var gAim = d3.select(gID);
-        gAim.attr("transform", "translate(0,"+ yPositionG + ")");
+        gAim.attr("transform", "translate(" + xPositionSingleCompareTeam + "," + yPositionG + ")");
         gAim.select("rect").attr("height", compareAreaElementHeight).attr("width", value * singleUnitWidth);
         gAim.select(textNameID).text(teamName).attr("width", $gData.x1 - $gData.x0).attr("dy", yPositionName);
         gAim.select(textValueID).text(value).attr("dy", "1.6em").attr("dx", (value * singleUnitWidth + 3) + "px");

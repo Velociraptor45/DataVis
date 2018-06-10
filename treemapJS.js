@@ -17,6 +17,8 @@ var d3 = d3 || {};
     var compareAreaTeamTwoID = "#compareTeamTwo";
     var compareAreaTeamTwoNameID = "#teamTwoName";
     var compareAreaTeamTwoValueID = "#teamTwoValue";
+    var compareHomeTeamClass = "compareHomeTeam";
+    var compareAwayTeamClass = "compareAwayTeam";
 
     var compareAreaElementHeight = 50;
     var singleUnitWidth = 10;
@@ -75,8 +77,6 @@ var d3 = d3 || {};
                 default: ;
             }
         }
-        //console.log(treemapDataAway);
-        //console.log(treemapDataHome);
     }
 
     /*
@@ -125,7 +125,6 @@ var d3 = d3 || {};
     */
     function buildTreemap(treemapData, svgID)
     {
-        //console.log(treemapData);
         var rankingObject = {"children": treemapData}
 
         var svg = d3.select(svgID);
@@ -169,7 +168,7 @@ var d3 = d3 || {};
         var images = svg.selectAll("g")
             .append("image")
             .attr("xlink:href", function(d){
-                return "img/bayern3.png";
+                return "img/logos/"+d.data["team"]+".png";
             })
             .attr("height", function(d){
                 return (d.x1 - d.x0 < d.y1 - d.y0) ? (d.y1 - d.y0) : (d.x1 - d.x0);
@@ -186,17 +185,6 @@ var d3 = d3 || {};
             .attr("width", function(d){
                 return d.x1 - d.x0;
             });
-
-        /*var labels = svg.selectAll("g")
-            .append("text")
-            .text(function(d){
-                return d.data["team"];
-            })
-            .attr("dy", "1em")
-            .attr("dx", "1em")
-            .attr("width", function(d){
-                return d.x1 - d.x0;
-            });*/
 
         var numbers = svg.selectAll("g")
             .append("text")
@@ -217,7 +205,7 @@ var d3 = d3 || {};
     }
 
     /*
-        selects all g-elements in both treemaps and calls the method to set
+        selects all g-elements in both treemaps and calls a method to set
         the button functionality
     */
     function setGElementsAsButtons()
@@ -241,25 +229,11 @@ var d3 = d3 || {};
     }
 
     /*
-        extracts information of the passed object and saves them
-    */
-    function saveInformation($g){
-        var transform = $g.attr("transform");
-        var $rect = $g.find("rect");
-        var height = $rect.attr("height");
-        var width = $rect.attr("width");
-
-        saveCompareAreaObjectsInformation.push({"transform": transform, "heigth": height, "width": width})
-    }
-
-    /*
         this function is called when a element in one of the treemaps is clicked
         $g is the clicked element
-        the function calls the method to add the clicked element to the compare area (if it's not full or the element already in it)
+        the function calls "setSingleCompareTeam" to add the clicked element to the compare area (if it's not full or the element's not already in it)
     */
     function dragIntoCompareArea($g){
-        saveInformation($g);
-
         if($compareAreaOneTeam == undefined || $compareAreaOneTeam[0] != $g[0]){
             if($compareAreaOneTeam == undefined && ($compareAreaTwoTeam == undefined || $compareAreaTwoTeam[0] != $g[0])){
                 setSingleCompareTeam($g, true, compareAreaTeamOneID, compareAreaTeamOneNameID, compareAreaTeamOneValueID, yPositionFirstTeamRectInCompareArea, yPositionFirstTeamNameInCompareArea);
@@ -268,12 +242,31 @@ var d3 = d3 || {};
                     setSingleCompareTeam($g, false, compareAreaTeamTwoID, compareAreaTeamTwoNameID, compareAreaTeamTwoValueID, yPositionSecondTeamRectInCompareArea, yPositionSecondTeamNameInCompareArea);
                 }
             } else {
-                removeSelectedClass($g.find("rect"));
+                removeClass($g.find("rect"), "selected");
+                addClass($g.find("rect"), "unselected");
                 removeFromCompareArea(false, compareAreaTeamTwoID, compareAreaTeamTwoNameID, compareAreaTeamTwoValueID);
+                checkForTeamsInCompareArea();
             }
         } else {
-            removeSelectedClass($g.find("rect"));
+            removeClass($g.find("rect"), "selected");
+            addClass($g.find("rect"), "unselected");
             removeFromCompareArea(true, compareAreaTeamOneID, compareAreaTeamOneNameID, compareAreaTeamOneValueID);
+            checkForTeamsInCompareArea();
+        }
+    }
+
+    /*
+        this function checks if there are no teams in the compareArea anymore
+        if so, it removes the "unselected" classes from every team
+    */
+    function checkForTeamsInCompareArea(){
+        if($compareAreaOneTeam === undefined && $compareAreaTwoTeam === undefined){
+            let objectsHome = $(treemapHomeID).find("rect");
+            let objectsAway = $(treemapAwayID).find("rect");
+            for(let i = 0; i < objectsHome.length; i++){
+                removeClass(objectsHome.eq(i), "unselected");
+                removeClass(objectsAway.eq(i), "unselected");
+            }
         }
     }
 
@@ -297,12 +290,49 @@ var d3 = d3 || {};
         gAim.select("rect").attr("height", compareAreaElementHeight).attr("width", value * singleUnitWidth);
         gAim.select(textNameID).text(teamName).attr("width", $gData.x1 - $gData.x0).attr("dy", yPositionName);
         gAim.select(textValueID).text(value).attr("dy", "1.6em").attr("dx", (value * singleUnitWidth + 3) + "px");
+        
+        addRightClassToCompareRect($g, gID);
+
         if(isFirstTeam){
             $compareAreaOneTeam = $g;
         } else {
             $compareAreaTwoTeam = $g;
         }
-        addSelectedClass($g.find("rect"));
+        if($g.find("rect").hasClass("unselected")){
+            removeClass($g.find("rect"), "unselected");
+        }
+        addClass($g.find("rect"), "selected");
+        addClassToAllUnselected();
+    }
+
+    /*
+        depending in which treemap $g is, this function adds the compareHomeTeamClass or the compareAwayTeamClass
+        to the corresponding rect (found via gID) in the compareArea
+    */
+    function addRightClassToCompareRect($g, gID){
+        let classToSet = "";
+        if("#" + $g.parent()[0].id === treemapHomeID){
+            classToSet = compareHomeTeamClass;
+        } else {
+            classToSet = compareAwayTeamClass;
+        }
+        addClass($(gID).find("rect"), classToSet);
+    }
+
+    /*
+        adds the class "unseleted" to all rect-elements in the treemaps that don't have the "selected" class
+    */
+    function addClassToAllUnselected(){
+        let objectsHome = $(treemapHomeID).find("rect");
+        let objectsAway = $(treemapAwayID).find("rect");
+        for(let i = 0; i<objectsHome.length; i++){
+            if(!objectsHome.eq(i).hasClass("selected")){
+                addClass(objectsHome.eq(i), "unselected");
+            }
+            if(!objectsAway.eq(i).hasClass("selected")){
+                addClass(objectsAway.eq(i), "unselected");
+            }
+        }
     }
 
     /*
@@ -321,28 +351,22 @@ var d3 = d3 || {};
         } else {
             $compareAreaTwoTeam = undefined;
         }
+
+        let rect = $(gID).find("rect");
+        if(rect.hasClass(compareHomeTeamClass)){
+            removeClass(rect, compareHomeTeamClass);
+        } else {
+            removeClass(rect, compareAwayTeamClass);
+        }
     }
 
-    /*
-        recalculates the initial area size to fit the rect it into the compare area
-    
-    function recalculateArea(x, y){
-        var xNew, yNew;
-        var oldAreaSize = x * y;
-        yNew = compareAreaElementHeight;
-        xNew = oldAreaSize / yNew;
-
-        return [xNew, yNew];
-    }*/
-
-    function addSelectedClass($element){
-        $element.addClass("selected");
+    function addClass($element, className){
+        $element.addClass(className);
     }
 
-    function removeSelectedClass($element){
-        $element.removeClass("selected");
+    function removeClass($element, className){
+        $element.removeClass(className);
     }
-
 
     loadJSON();
 }());

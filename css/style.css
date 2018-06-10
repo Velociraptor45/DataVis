@@ -113,8 +113,12 @@ footer {
 }
 
 .selected{
-  fill: rgb(255, 0, 0);
-  opacity: 0.7;
+  fill: none;
+}
+
+.unselected{
+  fill: black;
+  opacity: 0.8;
 }
 
 #compareArea text{
@@ -136,8 +140,13 @@ rect {
   stroke-opacity: 1;
 }
 
-#compareArea rect{
-  fill: rgb(104, 241, 92);
+.compareHomeTeam{
+  gfill: rgb(104, 241, 92);
+  fill: green;
+}
+
+.compareAwayTeam{
+  fill: blue;
 }
 
 .value{

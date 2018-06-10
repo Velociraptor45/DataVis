@@ -23,7 +23,7 @@
 }
 
 .selected{
-    fill: rgb(255, 0, 0);
+    fill: white;
 }
 
 #compareArea text{

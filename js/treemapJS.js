@@ -7,7 +7,6 @@ var d3 = d3 || {};
     var treemapDataAway = [];
     var $compareAreaOneTeam = undefined;
     var $compareAreaTwoTeam = undefined;
-    var saveCompareAreaObjectsInformation = [];
 
     var treemapHomeID = "#treemapHomeTeam";
     var treemapAwayID = "#treemapAwayTeam";
@@ -30,25 +29,26 @@ var d3 = d3 || {};
 
     var xPositionSingleCompareTeam = 35;
 
-    var widthCompareArea = 200;
+    var widthCompareArea = 300;
 
     function loadJSON(){
         d3.json("JSON/bundesliga06_17.json", function(data){
             buildTreemapJSON(data.bundesliga[10].saison_16_17);
             buildTreemap(treemapDataHome, treemapHomeID);
             buildTreemap(treemapDataAway, treemapAwayID);
-            setGElementsAsButtons();
+            setGElementsAsButtons(treemapHomeID);
+            setGElementsAsButtons(treemapAwayID);
         });
     }
 
     /*
-        builds treemapDataHoem and treemapDataAway arrays by extracting from the data json
+        builds treemapDataHome and treemapDataAway arrays by extracting from the data json
         data contains one season
     */
     function buildTreemapJSON(data){
         for(var i = 0; i < data.length; i++){
             var homeTeam = data[i]["HomeTeam"];
-            var awayTeam = data[i]["AwayTeam"]
+            var awayTeam = data[i]["AwayTeam"];
             if(!isInData(homeTeam, treemapDataHome)){
                 addKeyToJSON(homeTeam, treemapDataHome);
             }
@@ -60,19 +60,17 @@ var d3 = d3 || {};
                     var index = getIndexOfTeam(homeTeam, treemapDataHome);
                     if(index != -1){
                         treemapDataHome[index].value += 1;
-                    }
-                    else{
+                    } else{
                         console.log("Indexfehler" + HomeTeam);
                     }
                     break;
                 case 'A':
-                var index = getIndexOfTeam(awayTeam, treemapDataAway);
-                if(index != -1){
-                    treemapDataAway[index].value += 1;
-                }
-                else{
-                    console.log("Indexfehler " + awayTeam);
-                }
+                    var index = getIndexOfTeam(awayTeam, treemapDataAway);
+                    if(index != -1){
+                        treemapDataAway[index].value += 1;
+                    } else {
+                        console.log("Indexfehler " + awayTeam);
+                    }
                     break;
                 default: ;
             }
@@ -128,7 +126,7 @@ var d3 = d3 || {};
         var rankingObject = {"children": treemapData}
 
         var svg = d3.select(svgID);
-        var width = (($(window).width() - widthCompareArea) / 2) * 0.9;
+        var width = (($(window).width() - widthCompareArea) / 2) - 96;
         var height = 600.0;
 
         setSVGSize(svg, width, height);
@@ -200,20 +198,17 @@ var d3 = d3 || {};
                 return (25 + d.data["value"]) + "px";
             })
             .attr("class", "value");
-
-        
     }
 
     /*
         selects all g-elements in both treemaps and calls a method to set
         the button functionality
+        treemapID is the ID of one of the both treemaps
     */
-    function setGElementsAsButtons()
+    function setGElementsAsButtons(treemapID)
     {
-        var homeG = $(treemapHomeID).find("g");
-        var awayG = $(treemapAwayID).find("g");
-        setButtonFunctionality(homeG);
-        setButtonFunctionality(awayG);
+        var gElements = $(treemapID).find("g");
+        setButtonFunctionality(gElements);
     }
 
     /*
@@ -306,7 +301,7 @@ var d3 = d3 || {};
     }
 
     /*
-        depending in which treemap $g is, this function adds the compareHomeTeamClass or the compareAwayTeamClass
+        depending on in which treemap $g is, this function adds the compareHomeTeamClass or the compareAwayTeamClass
         to the corresponding rect (found via gID) in the compareArea
     */
     function addRightClassToCompareRect($g, gID){

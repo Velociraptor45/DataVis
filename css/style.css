@@ -97,7 +97,7 @@ footer {
 }
 
 #compareArea{
-  width: 200px;
+  width: 300px;
   height: 400px;
   position: relative;
   top: 10px;
@@ -141,7 +141,6 @@ rect {
 }
 
 .compareHomeTeam{
-  gfill: rgb(104, 241, 92);
   fill: green;
 }
 
@@ -154,4 +153,12 @@ rect {
   stroke: white;
   stroke-width: 1px;
   text-anchor: middle;
+}
+
+.sources{
+  text-align: left;
+}
+
+.sources ul{
+  list-style-type: none;
 }

@@ -77,14 +77,24 @@ footer {
 
 /* specific */
 
+h2{
+  text-align: center;
+}
+
 .strengthHome{
   position: absolute;
   left: 10%;
+  color: green;
 }
 
 .strengthAway{
   position: absolute;
   right: 10%;
+  color: blue;
+}
+
+.seasonLable{
+  margin: 0 auto;
 }
 
 #treemapHomeTeam{

@@ -227,6 +227,7 @@ var d3 = d3 || {};
         this function is called when a element in one of the treemaps is clicked
         $g is the clicked element
         the function calls "setSingleCompareTeam" to add the clicked element to the compare area (if it's not full or the element's not already in it)
+        checking a variable for undefined first (inside the if statements) is necessary to avoid errors when checking the content of this variable
     */
     function dragIntoCompareArea($g){
         if($compareAreaOneTeam == undefined || $compareAreaOneTeam[0] != $g[0]){
@@ -315,7 +316,7 @@ var d3 = d3 || {};
     }
 
     /*
-        adds the class "unseleted" to all rect-elements in the treemaps that don't have the "selected" class
+        adds the class "unselected" to all rect-elements in the treemaps that don't have the "selected" class
     */
     function addClassToAllUnselected(){
         let objectsHome = $(treemapHomeID).find("rect");
